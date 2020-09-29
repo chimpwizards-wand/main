@@ -1,0 +1,56 @@
+{
+  "name": "@chimpwizards/wand",
+  "version": "2.0.0",
+  "description": "Magic happens everywhere",
+  "homepage": "http://chimpwizards.com/wand",
+  "author": "chimpwizards.com",
+  "contributors": [
+    "ndru@chimpwizard.com"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chimpwizard/wand"
+  },
+  "main": "index.js",
+  "bin": {
+    "w": "./Wand.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "echo $PWD && echo `date +%R\\ ` \"Building package...\" && rm -rf ./dist/* && mkdir -p ./dist && npx tsc &&  rsync -ra ./src/ ./dist --exclude='*.ts' && cp package.json ./dist && echo \"package build done...\"",
+    "deploy": "npm run build; cd dist && npm pack | xargs npm i -g",
+    "postinstall": "w readme && w init --force",
+    "xnode": "node -e 'var figlet=require(\"figlet\");figlet.textSync(\"wand v1.0.0\", {horizontalLayout: \"full\", font: \"Flower Power\" })'"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm version release",
+      "pre-commit--DISABLED": "npm test"
+    }
+  },
+  "dependencies": {
+    "boxen": "^4.2.0",
+    "chalk": "^4.0.0",
+    "clear": "^0.1.0",
+    "cli-progress": "^3.8.2",
+    "debug": "^4.1.1",
+    "figlet": "^1.4.0",
+    "js-yaml": "^3.13.1",
+    "lodash": "^4.17.15",
+    "reflect-metadata": "^0.1.13",
+    "yargs": "^15.3.1"
+  },
+  "devDependencies": {
+    "@types/clear": "^0.1.0",
+    "@types/debug": "^4.1.5",
+    "@types/figlet": "^1.2.0",
+    "@types/js-yaml": "^3.12.4",
+    "@types/lodash": "^4.14.151",
+    "@types/node": "^14.0.1",
+    "@types/yargs": "^15.0.5",
+    "husky": "^4.2.5",
+    "ts-node": "^8.10.1",
+    "typescript": "^3.9.2"
+  }
+}
