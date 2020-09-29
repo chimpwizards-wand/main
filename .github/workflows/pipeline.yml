@@ -24,5 +24,4 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: Build
-        #uses: chimpwizards-pipeline/npm-build@v1.0.2
-        uses: chimpwizards-pipeline/npm-build
+        uses: chimpwizards-pipeline/npm-build@v1.0.3
