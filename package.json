@@ -26,10 +26,9 @@
   "husky": {
     "hooks": {
       "pre-push": "npm version patch",
-      "pre-commit--DISABLED": "npm test"
+      "pre-commit-DISABLED": "npm test"
     }
   },
-
   "dependencies": {
     "boxen": "^4.2.0",
     "chalk": "^4.0.0",
