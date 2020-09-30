@@ -26,4 +26,17 @@ jobs:
         uses: chimpwizards-pipeline/npm-build@v1.0.6
 
       - name: Publish
-        uses: chimpwizards-pipeline/npm-publish@v1.0.2        
+        uses: chimpwizards-pipeline/npm-publish@v1.0.2     
+        
+        env: # Or as an environment variable
+          NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+          NPM_AUTH_EMAIL: ${{ secrets.NPM_AUTH_EMAIL }}
+
+
+#
+# REFERENCE
+# - https://medium.com/@michaelekpang/creating-a-ci-cd-pipeline-using-github-actions-b65bb248edfe
+# - https://docs.github.com/en/free-pro-team@latest/actions/creating-actions/metadata-syntax-for-github-actions
+# - https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets
+#
