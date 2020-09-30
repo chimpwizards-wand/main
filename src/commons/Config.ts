@@ -67,8 +67,8 @@ export class Config  {
     }
 
     _.merge(config, context);
-    config['local']={} //Dont save location
-    
+    delete config['local'] //Dont save location
+
     var yml = yaml.dump(config);
     var rootFolder = path.dirname(configPath);
 
