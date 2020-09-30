@@ -63,12 +63,12 @@ export class Config  {
 
     if (isConfigPresent) {
       config= yaml.safeLoad(fs.readFileSync(configPath, 'utf8'));
-      config['local']={} //Dont save location
       debug(`CONFIG: ${config}`);
     }
 
     _.merge(config, context);
-
+    config['local']={} //Dont save location
+    
     var yml = yaml.dump(config);
     var rootFolder = path.dirname(configPath);
 
