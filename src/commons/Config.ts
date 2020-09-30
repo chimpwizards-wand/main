@@ -11,7 +11,8 @@ const debug = Debug("w:cli:config");
 
 interface ConfigOptions {
   context?: any, 
-  dir?: string
+  dir?: string,
+  forceNew?: boolean
 }
 
 export class Config  {
@@ -44,10 +45,17 @@ export class Config  {
     return config;
   }
 
-  save({ context = {}, dir= '.' }:ConfigOptions) {
+  save({ context = {}, dir= '.', forceNew = false }:ConfigOptions) {
     debug(`Saving config...`);
 
-    const configPath: string = utils.findNearestConfig(dir);
+    let configPath: string = path.join(
+      dir,
+      './.wand', 
+      './config.yaml'
+    );
+    if (!forceNew) {
+      configPath = utils.findNearestConfig(dir);
+    }
     debug(`CONFIG Found @ ${configPath}`)
     const isConfigPresent = (fs.existsSync(configPath));
 

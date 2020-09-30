@@ -141,7 +141,7 @@ export class Root  {
                     var definition = plugin.register();
                     allPlugins.push(definition)
                 } else {
-                    if ( packageName.indexOf("spell-config")>0) {
+                    if ( packageName.indexOf("spell-workspace")>0) {
                         debug(`PACKAGE FONUD`)
                     }                    
                     var allofthem = _.values(plugin);
@@ -280,7 +280,7 @@ export class Root  {
         return parents;
     }
     static getCommandDefinition(config: any, command: string) {
-        if ( command == 'xxx' || command == 'workspace') {
+        if ( command == 'xxx' || command == 'new') {
             debug(`FOUND`)
         }  
         let commandConfiguration = config[command];
@@ -297,7 +297,7 @@ export class Root  {
                 
                 debug(`*** BUILDING command ${commandConfiguration.command.name}`)
 
-                if (commandConfiguration.command.name == "xxx" || commandConfiguration.command.name == "workspace") {
+                if (commandConfiguration.command.name == "xxx" || commandConfiguration.command.name == "new") {
                     debug(`FOUND ${commandConfiguration.command.name}`)
                 }
 
