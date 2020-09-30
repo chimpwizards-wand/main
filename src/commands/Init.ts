@@ -42,7 +42,7 @@ export class Init extends Command  {
         //
         let spells: string[] = [
             "spell-spells",
-            "spell-exec",
+            "spell-shell",
             "spell-config",
             "spell-workspace"
         ];
