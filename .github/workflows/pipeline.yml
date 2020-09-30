@@ -21,6 +21,7 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+    
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
@@ -31,9 +32,9 @@ jobs:
         uses: chimpwizards-pipeline/npm-publish@v1.0.2     
         
         env: # Or as an environment variable
-          NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
+          NPM_USERNAME: ndruwizz
           NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-          NPM_AUTH_EMAIL: ${{ secrets.NPM_AUTH_EMAIL }}
+          NPM_AUTH_EMAIL: ndru@chimpwizard.com
 
 
 #
