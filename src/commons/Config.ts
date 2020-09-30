@@ -37,7 +37,7 @@ export class Config  {
       config= yaml.safeLoad(fs.readFileSync(configPath, 'utf8'));
       config['local'] = {
         location: configPath,
-        root: path.dirname(configPath)
+        root: path.dirname(path.dirname(configPath))
       }
       debug(`CONFIG: ${config}`);
     }
