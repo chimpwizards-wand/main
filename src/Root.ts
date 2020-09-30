@@ -95,7 +95,7 @@ export class Root  {
         ;
 
         Object.keys(config).sort().forEach( command => {
-            if ( command == 'xxx' || command == 'sample') {
+            if ( command == 'xxx' || command == 'shell') {
                 debug(`XXX FOUND`)
             }            
             let commandDefinition: any = this.getCommandDefinition(config, command);
@@ -119,7 +119,7 @@ export class Root  {
             //TODO: Replace hardcoded path
             var packageName = filePath.replace(".js","").replace(".ts","")
 
-            if ( packageName.indexOf("spell-config")>0) {
+            if ( packageName.indexOf("spell-shell")>0) {
                 debug(`PACKAGE FONUD`)
             }
 
@@ -133,6 +133,10 @@ export class Root  {
                     plugin = await import(packageName)
                 }
 
+                if ( packageName.indexOf("spell-shell")>0) {
+                    debug(`PACKAGE FONUD`)
+                }    
+                            
                 var allPlugins =[]
                 if(plugin['register'] != undefined) {
                     var definition = plugin.register();
@@ -157,7 +161,7 @@ export class Root  {
 
                     var parent = defaultParent || definition?.command?.parent;
 
-                    if (parent && parent == 'xxx') {
+                    if (parent && parent == 'shell') {
                         debug(`FOUND ${defaultParent||'root'}`)
                     }
 
@@ -277,7 +281,7 @@ export class Root  {
         return parents;
     }
     static getCommandDefinition(config: any, command: string) {
-        if ( command == 'xxx' || command == 'sample') {
+        if ( command == 'xxx' || command == 'shell') {
             debug(`FOUND`)
         }  
         let commandConfiguration = config[command];
