@@ -6,6 +6,7 @@ import * as yaml from 'js-yaml'
 import * as _ from 'lodash';  
 import * as utils from './Utils'
 
+
 const debug = Debug("w:cli:config");
 
 interface ConfigOptions {
@@ -34,7 +35,10 @@ export class Config  {
 
     if (isConfigPresent) {
       config= yaml.safeLoad(fs.readFileSync(configPath, 'utf8'));
-      config['location'] = configPath;
+      config['local'] = {
+        location: configPath,
+        root: path.dirname(configPath)
+      }
       debug(`CONFIG: ${config}`);
     }
     return config;
@@ -51,7 +55,7 @@ export class Config  {
 
     if (isConfigPresent) {
       config= yaml.safeLoad(fs.readFileSync(configPath, 'utf8'));
-      delete config['location'] //Dont save location as key
+      delete config['local'] //Dont save location
       debug(`CONFIG: ${config}`);
     }
 
