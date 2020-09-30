@@ -78,5 +78,11 @@ export class Config  {
     return configPath;
 
   }
+
+  inContext({ dir= '.' }:ConfigOptions): boolean {
+    let configPath = utils.findNearestConfig(dir);
+    const isConfigPresent = (fs.existsSync(configPath));
+    return isConfigPresent;
+  }
   
 }
