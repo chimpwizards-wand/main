@@ -74,14 +74,14 @@ export class Root  {
         }
 
 
-    
+        let author = info.author||'chimpwizard.com';
         yargs
             .scriptName("w")
             .usage("\nUsage: $0 <command>")
             .help()    
             .demand(1, "Must provide a valid command\n")
             .wrap(100)
-            .epilogue(`(copyrigth) ${info.author||''} 2020`)
+            .epilogue(`(copyrigth) ${author} 2020`)
             .epilogue(`for more information, find our manual at ${info.homepage||''}`)
             .epilogue('\n')
             // .fail(function (msg, err, yargs) {
