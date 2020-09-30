@@ -74,15 +74,18 @@ export class Init extends Command  {
             // }
 
             debug(`Spells scope" ${this.scopeFrom}`)
-            let name = `${this.scopeFrom}}/${x}`;
+            let name = `${this.scopeFrom}/${x}`;
 
             //npm i @chimpwizard/commons@npm:@chimpwizard-3.3/commons
+            debug(`EXECUTING: npm ${this.force?"--force":""} ${this.global?"--global":""}  install ${(this.scope==this.scopeFrom)?name:name+"@npm:"+this.scope+'/'+x}${(this.release=="latest")?"":"@"+this.release}`)
             try {
                 exec.run( {
                     cmd: `npm ${this.force?"--force":""} ${this.global?"--global":""}  install ${(this.scope==this.scopeFrom)?name:name+"@npm:"+this.scope+'/'+x}${(this.release=="latest")?"":"@"+this.release}`,
                     output: false
                 })
-            } catch(e) {}
+            } catch(e) {
+                debug(`ERROR: ${e}`)
+            }
 
             bar.increment({spell: x});
         });
