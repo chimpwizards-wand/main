@@ -1,0 +1,7 @@
+version: '3'
+services:            
+    action:
+        entrypoint: sh
+        image: 'chimpwizards/pipeline-npm-build'
+        volumes: 
+            - $PWD:/app
