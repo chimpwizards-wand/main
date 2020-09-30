@@ -26,4 +26,4 @@ jobs:
         uses: chimpwizards-pipeline/npm-build@v1.0.6
 
       - name: Publish
-        uses: chimpwizards-pipeline/npm-publich@v1.0.2        
+        uses: chimpwizards-pipeline/npm-publish@v1.0.2        
