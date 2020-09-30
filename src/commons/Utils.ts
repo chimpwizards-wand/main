@@ -47,27 +47,30 @@ export function  findInstalledSpells(cwd: string, scope?: string) {
     return folders;
 }
 
-export function findNearestConfig( cwd?: string ) {
-    var parentFolder = path.dirname(cwd || process.cwd())
-    var configPath = path.join(
+export function findNearestConfig( cwd?: string ): string {
+    var parentFolder = cwd || process.cwd()
+    debug(`CHECKING [${parentFolder}]`)
+
+    var configPath: string|undefined = path.join(
         parentFolder,
         './.wand', 
         './config.yaml'
       );
-    while (!fs.existsSync(configPath) && configPath != '/') {
-        debug(`CHECKING [${configPath}]`)
+
+    if (!fs.existsSync(configPath) && parentFolder != '/') {
         parentFolder = path.dirname(parentFolder)
+        configPath = findNearestConfig(parentFolder)
+    }
+
+    //Set current as location
+    if (!fs.existsSync(configPath)) {
         configPath = path.join(
-            parentFolder,
+            process.cwd(),
             './.wand', 
             './config.yaml'
           );
     }
 
-    var folder;
-    if (fs.existsSync(configPath)) {
-        folder = configPath;
-    }
-
-    return folder;
+    debug(`CONFIG PATH: ${configPath}`)
+    return configPath;
 }

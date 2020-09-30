@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as yaml from 'js-yaml'
 import * as _ from 'lodash';  
+import * as utils from './Utils'
 
 const debug = Debug("w:cli:config");
 
@@ -20,11 +21,7 @@ export class Config  {
   load() {
     debug(`Loading config...`);
 
-    const configPath = path.join(
-        ('.'),
-        ('./.wand'), 
-        ('./config.yaml')
-      );
+    const configPath = utils.findNearestConfig(process.cwd()) || process.cwd();
 
     //For backwards compatibility
     const metaPath = '.meta';
@@ -37,6 +34,7 @@ export class Config  {
 
     if (isConfigPresent) {
       config= yaml.safeLoad(fs.readFileSync(configPath, 'utf8'));
+      config['location'] = configPath;
       debug(`CONFIG: ${config}`);
     }
     return config;
@@ -45,17 +43,15 @@ export class Config  {
   save({ context = {}, dir= '.' }:ConfigOptions) {
     debug(`Saving config...`);
 
-    const configPath = path.join(
-      (dir),
-      ('.wand'), 
-      ('config.yaml')
-    );
+    const configPath: string = utils.findNearestConfig(dir);
+    debug(`CONFIG Found @ ${configPath}`)
     const isConfigPresent = (fs.existsSync(configPath));
 
     var config : any = {};
 
     if (isConfigPresent) {
       config= yaml.safeLoad(fs.readFileSync(configPath, 'utf8'));
+      delete config['location'] //Dont save location as key
       debug(`CONFIG: ${config}`);
     }
 
@@ -70,6 +66,5 @@ export class Config  {
     return configPath;
 
   }
-
   
 }
