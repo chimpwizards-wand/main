@@ -45,7 +45,7 @@ export class Config  {
     return config;
   }
 
-  save({ context = {}, dir= '.', forceNew = false }:ConfigOptions) {
+  save({ context = {}, dir= process.cwd(), forceNew = false }:ConfigOptions) {
     debug(`Saving config...`);
 
     let configPath: string = path.join(
@@ -63,7 +63,7 @@ export class Config  {
 
     if (isConfigPresent) {
       config= yaml.safeLoad(fs.readFileSync(configPath, 'utf8'));
-      delete config['local'] //Dont save location
+      config['local']={} //Dont save location
       debug(`CONFIG: ${config}`);
     }
 
