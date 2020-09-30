@@ -29,8 +29,12 @@ export class Init extends Command  {
     @CommandParameter({ description:'Install a specific release/version', defaults: 'latest', alias: 'r'})
     release: string = 'latest';
 
-    @CommandParameter({ description:'Specify package scope to use', defaults: '@chimpwizard-wand', alias: 's'})
-    scope: string = '@chimpwizard-wand';
+    @CommandParameter({ description:'Specify package scope to use', defaults: '@chimpwizards-wand', alias: 's'})
+    scope: string = '@chimpwizards-wand';
+
+    @CommandParameter({ description:'Specify package scope where the spells are located', defaults: '@chimpwizards-wand', alias: 't'})
+    scopeFrom: string = '@chimpwizards-wand';
+
 
     getSpells() {
         //
@@ -62,19 +66,20 @@ export class Init extends Command  {
 
         this.getSpells().forEach( x => {
 
-            let scope;
-            if (info) {
-                if (info.name) {
-                    scope = info.name.replace(/\/.*/,"");
-                }
-            }
-            scope =  scope || '@chimpwizard-wand'
-            let name = `${scope}/${x}`;
+            // let scope = this.scope;
+            // if (info) {
+            //     if (info.name) {
+            //         scope = info.name.replace(/\/.*/,"");
+            //     }
+            // }
+
+            debug(`Spells scope" ${this.scopeFrom}`)
+            let name = `${this.scopeFrom}}/${x}`;
 
             //npm i @chimpwizard/commons@npm:@chimpwizard-3.3/commons
             try {
                 exec.run( {
-                    cmd: `npm ${this.force?"--force":""} ${this.global?"--global":""}  install ${(this.scope==scope)?name:name+"@npm:"+this.scope+'/'+x}${(this.release=="latest")?"":"@"+this.release}`,
+                    cmd: `npm ${this.force?"--force":""} ${this.global?"--global":""}  install ${(this.scope==this.scopeFrom)?name:name+"@npm:"+this.scope+'/'+x}${(this.release=="latest")?"":"@"+this.release}`,
                     output: false
                 })
             } catch(e) {}
