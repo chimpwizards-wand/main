@@ -1,5 +1,5 @@
 Magic happens everywhere
 
 ```sh
-npm i -g @ @chimpeizard/wand
+npm i -g @ @chimpwizards/wand
 ```
