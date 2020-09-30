@@ -22,7 +22,8 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      # Runs a set of commands using the runners shell
       - name: Build
-        uses: chimpwizards-pipeline/npm-build@v1.0.5
-        
+        uses: chimpwizards-pipeline/npm-build@v1.0.6
+
+      - name: Publish
+        uses: chimpwizards-pipeline/npm-publich@v1.0.2        
