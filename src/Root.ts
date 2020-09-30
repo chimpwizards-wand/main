@@ -94,7 +94,7 @@ export class Root  {
         ;
 
         Object.keys(config).sort().forEach( command => {
-            if ( command == 'xxx' || command == 'shell') {
+            if ( command == 'xxx' || command == 'new') {
                 debug(`XXX FOUND`)
             }            
             let commandDefinition: any = this.getCommandDefinition(config, command);
@@ -118,7 +118,7 @@ export class Root  {
             //TODO: Replace hardcoded path
             var packageName = filePath.replace(".js","").replace(".ts","")
 
-            if ( packageName.indexOf("spell-shell")>0) {
+            if ( packageName.indexOf("spell-workspace")>0) {
                 debug(`PACKAGE FONUD`)
             }
 
@@ -132,7 +132,7 @@ export class Root  {
                     plugin = await import(packageName)
                 }
 
-                if ( packageName.indexOf("spell-shell")>0) {
+                if ( packageName.indexOf("spell-workspace")>0) {
                     debug(`PACKAGE FONUD`)
                 }    
                             
@@ -160,7 +160,7 @@ export class Root  {
 
                     var parent = defaultParent || definition?.command?.parent;
 
-                    if (parent && parent == 'shell') {
+                    if (parent && parent == 'workspace') {
                         debug(`FOUND ${defaultParent||'root'}`)
                     }
 
@@ -170,7 +170,7 @@ export class Root  {
                             config[parent] = {
                                 command: {
                                     name: parent,
-                                    desc: parent
+                                    description: parent
                                 },
 
                             }
@@ -280,7 +280,7 @@ export class Root  {
         return parents;
     }
     static getCommandDefinition(config: any, command: string) {
-        if ( command == 'xxx' || command == 'shell') {
+        if ( command == 'xxx' || command == 'workspace') {
             debug(`FOUND`)
         }  
         let commandConfiguration = config[command];
@@ -297,7 +297,7 @@ export class Root  {
                 
                 debug(`*** BUILDING command ${commandConfiguration.command.name}`)
 
-                if (commandConfiguration.command.name == "xxx" || commandConfiguration.command.name == "sample") {
+                if (commandConfiguration.command.name == "xxx" || commandConfiguration.command.name == "workspace") {
                     debug(`FOUND ${commandConfiguration.command.name}`)
                 }
 
