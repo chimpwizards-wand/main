@@ -57,9 +57,9 @@ export function findNearestConfig( cwd?: string ): string {
         './config.yaml'
       );
 
-    if (!fs.existsSync(configPath) && parentFolder != '/' && parentFolder != '.' ) {
-        parentFolder = path.dirname(parentFolder)
-        configPath = findNearestConfig(parentFolder)
+    let grandParent = path.dirname(parentFolder);
+    if (!fs.existsSync(configPath) && parentFolder != grandParent && parentFolder != '.' ) {
+        configPath = findNearestConfig(grandParent)
     }
 
     //Set current as location
