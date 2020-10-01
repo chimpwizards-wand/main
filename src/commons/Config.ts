@@ -19,6 +19,7 @@ export class Config  {
   constructor() {
   }
 
+  //Load configuration
   load() {
     debug(`Loading config...`);
 
@@ -41,6 +42,7 @@ export class Config  {
     return config;
   }
 
+  //Save configuration
   save({ context = {}, dir= process.cwd(), forceNew = false }:ConfigOptions) {
     debug(`Saving config...`);
 
@@ -80,7 +82,8 @@ export class Config  {
 
   }
 
-  inContext({ dir= '.' }:ConfigOptions): boolean {
+  //Check if the current location is inside a contect
+  inContext({ dir= process.cwd() }:ConfigOptions): boolean {
     let configPath = utils.findNearestConfig(dir);
     const isConfigPresent = (fs.existsSync(configPath));
     return isConfigPresent;
