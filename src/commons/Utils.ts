@@ -58,6 +58,8 @@ export function findNearestConfig( cwd?: string ): string {
       );
 
     let grandParent = path.dirname(parentFolder);
+    debug(`Parent folder: ${parentFolder}`)
+    debug(`Grand Parent folder: ${grandParent}`)
     if (!fs.existsSync(configPath) && parentFolder != grandParent && parentFolder != '.' ) {
         configPath = findNearestConfig(grandParent)
     }
