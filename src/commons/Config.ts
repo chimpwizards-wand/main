@@ -35,6 +35,8 @@ export class Config  {
         root: path.dirname(path.dirname(configPath))
       }
       debug(`CONFIG: ${JSON.stringify(config)}`);
+      debug(`Location: ${config.local.location}`);
+      debug(`Root: ${config.local.root}`);
     }
     return config;
   }
