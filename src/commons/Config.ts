@@ -23,10 +23,12 @@ export class Config  {
   load() {
     debug(`Loading config...`);
 
+    debug(`Find nearest to current location config file`)
     const configPath = utils.findNearestConfig(process.cwd()) || process.cwd();
     const isConfigPresent = (fs.existsSync(configPath));
     var config : any = {};
 
+    debug(`If there is a config file inject location as a temporary metadata`)
     if (isConfigPresent) {
       config= yaml.safeLoad(fs.readFileSync(configPath, 'utf8'));
       config['local'] = {
