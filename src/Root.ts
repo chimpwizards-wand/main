@@ -79,7 +79,7 @@ export class Root  {
             .usage("\nUsage: $0 <command>")
             .help()    
             .demand(1, "Must provide a valid command\n")
-            .wrap(100)
+            .wrap(120)
             .epilogue(`(copyrigth) ${info.author.name||'chimpwizard.com'} 2020`)
             .epilogue(`for more information, find our manual at ${info.homepage||''}`)
             .epilogue('\n')
