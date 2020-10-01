@@ -24,14 +24,7 @@ export class Config  {
     debug(`Loading config...`);
 
     const configPath = utils.findNearestConfig(process.cwd()) || process.cwd();
-
-    //For backwards compatibility
-    const metaPath = '.meta';
-    const lernaPath='lerna.json'
-
     const isConfigPresent = (fs.existsSync(configPath));
-
-
     var config : any = {};
 
     if (isConfigPresent) {
@@ -40,7 +33,7 @@ export class Config  {
         location: configPath,
         root: path.dirname(path.dirname(configPath))
       }
-      debug(`CONFIG: ${config}`);
+      debug(`CONFIG: ${JSON.stringify(config)}`);
     }
     return config;
   }
