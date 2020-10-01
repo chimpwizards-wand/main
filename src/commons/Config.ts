@@ -19,7 +19,6 @@ export class Config  {
   constructor() {
   }
 
-  //load({ context = {}, dir= '.' }:ConfigOptions ) {
   load() {
     debug(`Loading config...`);
 
@@ -43,14 +42,18 @@ export class Config  {
   save({ context = {}, dir= process.cwd(), forceNew = false }:ConfigOptions) {
     debug(`Saving config...`);
 
+    debug(`Calculate config location folder`)
     let configPath: string = path.join(
       dir,
       './.wand', 
       './config.yaml'
     );
+
+    debug(`If new is forced then create configu in current folder if doesn't exists`)
     if (!forceNew) {
       configPath = utils.findNearestConfig(dir);
     }
+
     debug(`CONFIG Found @ ${configPath}`)
     const isConfigPresent = (fs.existsSync(configPath));
 
@@ -61,12 +64,13 @@ export class Config  {
       debug(`CONFIG: ${config}`);
     }
 
+    debug(`Merge existing config with new data`)
     _.merge(config, context);
-    delete config['local'] //Dont save location
+    delete config['local'] //Dont save temporarly metadata
 
+    debug(`Save configuration`)
     var yml = yaml.dump(config);
     var rootFolder = path.dirname(configPath);
-
     fs.mkdirSync(rootFolder,{ recursive: true });
     fs.writeFileSync(configPath, yml)
 
