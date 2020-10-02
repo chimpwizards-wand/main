@@ -21,10 +21,14 @@ export class Config  {
 
   //Load configuration
   load() {
+    this.load2({})
+  }
+
+  load2({ dir= process.cwd()}:ConfigOptions) {
     debug(`Loading config...`);
 
     debug(`Find nearest to current location config file`)
-    const configPath = utils.findNearestConfig(process.cwd()) || process.cwd();
+    const configPath = utils.findNearestConfig(dir) || dir;
     const isConfigPresent = (fs.existsSync(configPath));
     var config : any = {};
 
