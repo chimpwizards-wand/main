@@ -20,11 +20,7 @@ export class Config  {
   }
 
   //Load configuration
-  load() {
-    this.load2({})
-  }
-
-  load2({ dir= process.cwd()}:ConfigOptions) {
+  load({ dir= process.cwd()}:ConfigOptions) {
     debug(`Loading config...`);
 
     debug(`Find nearest to current location config file`)
