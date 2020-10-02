@@ -26,7 +26,7 @@ export class Execute  {
     debug(`Executing ${cmd}...`);
 
     var model = new Config()
-    var config = model.load();
+    var config = model.load({});
     
     //Run it on solution
     this.run({folder: process.cwd(), cmd: cmd})
