@@ -448,7 +448,7 @@ export class Root  {
                         // const executer = new Execute();
                         // let cmd = `w ${commandConfiguration.usage} --help`;
                         // executer.run({cmd: cmd, showLog: false})    
-                        console.log(`Missing argument [${missing.join(",")}]`)
+                        console.log(chalk.red(`Missing argument [${chalk.cyan(missing.join(","))}]`))
                     }
                     debug(`AFTER EXECUTE ----------------- `)
                 }
