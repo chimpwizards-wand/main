@@ -170,7 +170,8 @@ export class Root  {
                             config[parent] = {
                                 command: {
                                     name: parent,
-                                    description: parent
+                                    description: parent,
+                                    aliases: parent.substring(0,1)
                                 },
 
                             }
