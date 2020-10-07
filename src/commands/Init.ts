@@ -26,6 +26,9 @@ export class Init extends Command  {
     @CommandParameter({ description: 'Force to install/override if exists', alias: 'f', defaults: false})
     force: boolean = false;
 
+    @CommandParameter({ description: 'Show logging execuion in console', alias: 'v', defaults: false})
+    verbose: boolean = false;
+
     @CommandParameter({ description:'Install a specific release/version', defaults: 'latest', alias: 'r'})
     release: string = 'latest';
 
@@ -41,9 +44,9 @@ export class Init extends Command  {
         // List of most used core spells
         //
         let spells: string[] = [
-            "spell-spells",
-            "spell-shell",
             "spell-config",
+            "spell-shell",
+            "spell-spells",
             "spell-workspace"
         ];
         return spells
@@ -81,7 +84,7 @@ export class Init extends Command  {
             try {
                 exec.run( {
                     cmd: `npm ${this.force?"--force":""} ${this.global?"--global":""}  install ${(this.scope==this.scopeFrom)?name:name+"@npm:"+this.scope+'/'+x}${(this.release=="latest")?"":"@"+this.release}`,
-                    output: false
+                    output: this.verbose
                 })
             } catch(e) {
                 debug(`ERROR: ${e}`)
