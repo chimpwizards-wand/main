@@ -16,7 +16,7 @@ const debug = Debug("w:cli:commands:init");
         [`init --force`, `Force initialization for all settings`],
         [`init --release 1.2`, `Install specific version of the cli`],
         [`init --no-global`, `Install CLI locally into your folder project`],
-        [`init --verbose`, `Show execution logs on console`],
+        [`init --verbose`, `Show execution logs in the console`],
     ]
 })
 export class Init extends Command  { 
