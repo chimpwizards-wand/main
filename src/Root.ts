@@ -94,7 +94,7 @@ export class Root  {
         ;
 
         Object.keys(config).sort().forEach( command => {
-            if ( command == 'xxx' || command == 'new') {
+            if ( command == 'namespace' || command == 'registry') {
                 debug(`XXX FOUND`)
             }            
             let commandDefinition: any = this.getCommandDefinition(config, command);
@@ -109,6 +109,34 @@ export class Root  {
     }
 
 
+    static findParentConfig(parent: string, config: any) {
+
+        if (parent == "registry") {
+            debug(`FOUND`)
+        }
+
+        var parentConfig: any;
+        for(var the1 in config) {
+            var theone: any = config[the1];
+            if ( theone.command.name == parent ) {
+                parentConfig= theone;
+            } else {
+                if ( theone.commands && Object.keys(theone.commands).length > 0) {
+                    parentConfig= this.findParentConfig(parent, theone.commands)
+                }
+            }
+
+            if (parentConfig) break;
+        }
+
+
+        //add commands collection if doesnt exists
+        if(parentConfig) {
+            parentConfig.commands = parentConfig.commands || {}
+        }
+
+        return parentConfig;
+    }
 
     static async addCommand(commandDir: string, config: any, name: string, defaultParent?: string) {
         let filePath = path.resolve(path.join(commandDir, name));
@@ -138,50 +166,52 @@ export class Root  {
                             
                 var allPlugins =[]
                 if(plugin['register'] != undefined) {
-                    var definition = plugin.register();
-                    allPlugins.push(definition)
+                    var definition1 = plugin.register();
+                    allPlugins.push(definition1)
                 } else {
-                    if ( packageName.indexOf("spell-workspace")>0) {
+                    if ( packageName.indexOf("spell-api")>0) {
                         debug(`PACKAGE FONUD`)
                     }                    
                     var allofthem = _.values(plugin);
                     allofthem.forEach( (oneofthem: any) => {
                         if(oneofthem['register'] != undefined) {
-                            var definition = oneofthem.register();
-                            allPlugins.push(definition)
+                            var definition2 = oneofthem.register();
+                            allPlugins.push(definition2)
                         }
 
                     })
                 }
 
                 debug(`Registering ${packageName}`)
-                for (var j = 0; j < allPlugins.length; j++){
-                    var definition = allPlugins[j];
+                //for (var j = 0; j < allPlugins.length; j++){
+                for (let definition of allPlugins){
+                    //var definition = allPlugins[j];
 
-                    var parent = defaultParent || definition?.command?.parent;
+                    var parent: any = defaultParent || definition?.command?.parent;
 
-                    if (parent && parent == 'workspace') {
+                    if (parent && parent == 'api') {
                         debug(`FOUND ${defaultParent||'root'}`)
                     }
 
                     if (parent) {
+
+                        var parentConfig: any = this.findParentConfig(parent, config)
+                        
                         //Create a empty parent
-                        if (!config[parent]) {
+                        if (!parentConfig) {
                             config[parent] = {
                                 command: {
                                     name: parent,
                                     description: parent,
                                     aliases: parent.substring(0,1)
                                 },
-
                             }
+                            parentConfig=config[parent];
                         }
+        
 
-                        if (config[parent]) {
-                            if (!config[parent].commands) {
-                                config[parent].commands = {}
-                            }
-                            config[parent].commands[definition.command.name] = definition
+                        if (parentConfig) {
+                            parentConfig.commands[definition.command.name] = definition
                         }
 
                         definition.command.parent = parent;
@@ -193,17 +223,20 @@ export class Root  {
                     //Search for subComponents
                     filePath = path.join(commandDir, definition.command.name);
                     if ( fs.existsSync(filePath)) {
+                        var parentConfig2: any = this.findParentConfig(parent, config)
+
                         var subComfing = config;
-                        if (parent && config[parent]) {
-                            subComfing = config[parent].commands;
+                        if (parent && parentConfig2) {
+                            subComfing = parentConfig2.commands;
                         }
 
-                        var bagSubComand = await this.addCommands(filePath, subComfing, definition.command.name)
+                        await this.addCommands(filePath, subComfing, definition.command.name)
 
                         //config = _.merge({}, bagSubComand);
 
                     }
                 }
+                debug(`End Cicle`)
             } catch (e) {
                 debug(`${chalk.red("SOMETHING WHENT WRONG")}`)
                 debug(e);
@@ -261,9 +294,15 @@ export class Root  {
     static addDummyArguments(config: any, command: string, allArgs: any) {
         debug(`COLLECTING ARGUMENTS ${command}`)
 
-        let commandConfiguration: any = config[command];
+        //let commandConfiguration: any = config[command];
+        let commandConfiguration: any = this.findParentConfig(command,config)
 
-        if (commandConfiguration.command.parent) {
+        if ( command == 'registry' ){
+            debug(`FOUND`)
+        } 
+
+
+        if (commandConfiguration.command?.parent) {
             
             this.addDummyArguments(commandConfiguration.command.parentConfig, commandConfiguration.command.parent, allArgs)
             
@@ -280,8 +319,9 @@ export class Root  {
 
         return parents;
     }
+
     static getCommandDefinition(config: any, command: string) {
-        if ( command == 'xxx' || command == 'new') {
+        if ( command == 'namespace' || command == 'registry') {
             debug(`FOUND`)
         }  
         let commandConfiguration = config[command];
@@ -436,8 +476,7 @@ export class Root  {
                     //TODO: Verify required Arguments
                     var missing = [];
                     if ( commandConfiguration.demandArgument) {
-                        for(var j=0; j < commandConfiguration.demandArgument.length; j++) {
-                            var requiredArgument = commandConfiguration.demandArgument[j]
+                        for(let requiredArgument in commandConfiguration.demandArgument) {
                             if (!instance[requiredArgument]) {
                                 missing.push(requiredArgument)
                             }
@@ -454,6 +493,10 @@ export class Root  {
                     debug(`AFTER EXECUTE ----------------- `)
                 }
             }
+        }
+
+        if (!commandDefinition) {
+            debug(`Something wrong happens...`)
         }
 
         return commandDefinition;

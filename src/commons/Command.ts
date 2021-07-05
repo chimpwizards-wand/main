@@ -34,7 +34,7 @@ export abstract class Command  {
 
     commandConfiguration.executer = instance;
     
-    if (commandConfiguration.command.name == 'workspace') {
+    if (commandConfiguration.command.name == 'api') {
       debug(`FOUND ${commandConfiguration.command.name}`)
     }    
 

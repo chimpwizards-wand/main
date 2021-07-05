@@ -44,13 +44,13 @@ export class Init extends Command  {
         //
         // List of most used core spells
         //
-        let spells: string[] = [
+        return [
             "spell-config",
             "spell-shell",
             "spell-spells",
-            "spell-workspace"
+            "spell-workspace",
+            "spell-api"
         ];
-        return spells
     }
 
     execute(yargs: any): void {
@@ -69,13 +69,6 @@ export class Init extends Command  {
         });
 
         this.getSpells().forEach( x => {
-
-            // let scope = this.scope;
-            // if (info) {
-            //     if (info.name) {
-            //         scope = info.name.replace(/\/.*/,"");
-            //     }
-            // }
 
             debug(`Spells scope" ${this.scopeFrom}`)
             let name = `${this.scopeFrom}/${x}`;
