@@ -30,6 +30,10 @@
     }
   },
   "dependencies": {
+    "@chimpwizards-wand/spell-api": "^2.0.20",
+    "@chimpwizards/wand": "^1.0.45",
+    "boxen": "^5.0.1",
+    "cd": "^0.3.3",
     "chalk": "^4.0.0",
     "clear": "^0.1.0",
     "cli-progress": "^3.8.2",

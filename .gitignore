@@ -1,6 +1,7 @@
 dist
 node_modules
 .npmrc
+.wand
 src/.wand
 src/packages
 package-lock.json

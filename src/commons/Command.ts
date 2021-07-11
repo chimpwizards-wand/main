@@ -13,6 +13,7 @@ export abstract class Command  {
   }
 
   constructor() {
+    debug(`Command()`)
   }
 
 
@@ -33,11 +34,7 @@ export abstract class Command  {
     //debug(`TYPE: ${this.constructor.name}`)
 
     commandConfiguration.executer = instance;
-    
-    if (commandConfiguration.command.name == 'api') {
-      debug(`FOUND ${commandConfiguration.command.name}`)
-    }    
-
+      
     let params= Object.getOwnPropertyNames(this);
     //debug(`ATTACH PARAMS: ${JSON.stringify(params)}`)
 
