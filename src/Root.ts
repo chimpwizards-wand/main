@@ -111,7 +111,7 @@ export class Root  {
 
 
     static findOrCreateParentConfigTree(parents: string, config: any) {
-        debug(`findOrCreateParentConfigTree`)
+        //debug(`findOrCreateParentConfigTree`)
         if (parents == 'api:petstore:get') {
             debug(`FOUND`)
         }           
@@ -119,12 +119,12 @@ export class Root  {
         var allParents:any = parents.split(":");
         var i = 0;
         for (let parent of allParents) {
-            debug(`Going to find ${parent}`)
+            //debug(`Going to find ${parent}`)
             if (!parentConfig) {
                 debug(`SOMETING WENT WRONG`)
             }
             var found: any = this.findOrCreateParentConfig(parent, parentConfig);
-            debug(`found`)
+            //debug(`found`)
             i++;
             if (i < allParents.length) {
                 found.commands=found.commands || [];
@@ -139,7 +139,7 @@ export class Root  {
     }
 
     static findOrCreateParentConfig(parent: string, config: any) {
-        debug(`findOrCreateParentConfig`)
+        //debug(`findOrCreateParentConfig`)
         if (parent == 'petstore') {
             debug(`FOUND`)
         }           
@@ -170,7 +170,7 @@ export class Root  {
         var i = 0;
         var parentConfig: any;
         for (let parent of allParents) {
-            debug(`Looking for ${parent}`)
+            //debug(`Looking for ${parent}`)
             for(var the1 in config) {
                 var theone: any = config[the1];
                 if ( theone.command.name == parent ) {
@@ -239,7 +239,7 @@ export class Root  {
                 }
 
 
-                debug(`Registering ${packageName}`)
+                //debug(`Registering ${packageName}`)
                 for (let definition of allPlugins){
                     var parent: any = defaultParent || definition?.command?.parent;
 
