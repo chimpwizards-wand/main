@@ -1,6 +1,6 @@
 {
   "name": "@chimpwizards/wand",
-  "version": "1.0.47",
+  "version": "1.0.48",
   "description": "Magic happens everywhere",
   "homepage": "http://chimpwizards.com/wand",
   "author": "chimpwizards.com",
@@ -26,12 +26,10 @@
   "husky": {
     "hooks": {
       "pre-push": "npm version patch",
-      "pre-commit": "npm test"
+      "XXpre-commit": "npm test"
     }
   },
   "dependencies": {
-    "@chimpwizards-wand/spell-api": "^2.0.20",
-    "@chimpwizards/wand": "^1.0.45",
     "boxen": "^5.0.1",
     "cd": "^0.3.3",
     "chalk": "^4.0.0",
