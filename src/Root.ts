@@ -95,9 +95,9 @@ export class Root  {
         ;
 
         Object.keys(config).sort().forEach( command => {
-            if ( command == 'namespace' || command == 'registry') {
-                debug(`XXX FOUND`)
-            }            
+            // if ( command == 'namespace' || command == 'registry') {
+            //     debug(`XXX FOUND`)
+            // }            
             let commandDefinition: any = this.getCommandDefinition(config, command);
             debug(`ATTACHING ${command}`)
 
@@ -112,9 +112,9 @@ export class Root  {
 
     static findOrCreateParentConfigTree(parents: string, config: any) {
         //debug(`findOrCreateParentConfigTree`)
-        if (parents == 'api:petstore:get') {
-            debug(`FOUND`)
-        }           
+        // if (parents == 'api:petstore:get') {
+        //     debug(`FOUND`)
+        // }           
         var parentConfig: any = config;
         var allParents:any = parents.split(":");
         var i = 0;
@@ -140,9 +140,9 @@ export class Root  {
 
     static findOrCreateParentConfig(parent: string, config: any) {
         //debug(`findOrCreateParentConfig`)
-        if (parent == 'petstore') {
-            debug(`FOUND`)
-        }           
+        // if (parent == 'petstore') {
+        //     debug(`FOUND`)
+        // }           
         var parentConfig: any = this.findParentConfig(parent, config)
         //Create a empty parent
         if (!parentConfig) {
@@ -161,11 +161,11 @@ export class Root  {
     }
 
     static findParentConfig(parents: string, config: any) {
-        debug(`findParentConfig`)
+        //debug(`findParentConfig`)
+        // if(parents.indexOf(":")>0) {
+        //     debug('found')
+        // }
 
-        if(parents.indexOf(":")>0) {
-            debug('found')
-        }
         var allParents:any = parents.split(":");
         var i = 0;
         var parentConfig: any;
@@ -202,9 +202,9 @@ export class Root  {
             //TODO: Replace hardcoded path
             var packageName = filePath.replace(".js","").replace(".ts","")
 
-            if ( packageName.indexOf("spell-workspace")>0) {
-                debug(`PACKAGE FONUD`)
-            }
+            // if ( packageName.indexOf("spell-workspace")>0) {
+            //     debug(`PACKAGE FONUD`)
+            // }
 
             debug(`Loading ${packageName}`)
 
@@ -252,9 +252,9 @@ export class Root  {
                         }
                         var parentConfig: any = this.findOrCreateParentConfigTree(parent, config)
 
-                        if (definition.command.name == 'import') {
-                            debug(`FOUND`)
-                        }                        
+                        // if (definition.command.name == 'import') {
+                        //     debug(`FOUND`)
+                        // }                        
                         if (parentConfig) {
                             parentConfig.commands[definition.command.name] = definition
                         }
@@ -332,9 +332,9 @@ export class Root  {
                         var parent = commandConfiguration.command.parent || 'api' 
 
 
-                        if (parent == "api:petstore:get" && commandConfiguration.command.name=='pet') {
-                            debug('found')
-                        }                             
+                        // if (parent == "api:petstore:get" && commandConfiguration.command.name=='pet') {
+                        //     debug('found')
+                        // }                             
 
                         var parentConfig: any = this.findOrCreateParentConfigTree(parent, config)
                         if (parentConfig) {
@@ -398,9 +398,9 @@ export class Root  {
         let commandConfiguration: any = config[command].command.parentConfig;
 
 
-        if ( command == 'registry' ){
-            debug(`FOUND`)
-        } 
+        // if ( command == 'registry' ){
+        //     debug(`FOUND`)
+        // } 
 
 
         if(!commandConfiguration || !commandConfiguration.command) {
@@ -442,9 +442,9 @@ export class Root  {
 
 
     static getCommandDefinition(config: any, command: string) {
-        if ( command == 'namespace' || command == 'registry') {
-            debug(`FOUND`)
-        }  
+        // if ( command == 'namespace' || command == 'registry') {
+        //     debug(`FOUND`)
+        // }  
         let commandConfiguration = config[command];
         debug(`BUILDING DEFINITION ${command}`)
         if (!commandConfiguration) {
@@ -461,9 +461,9 @@ export class Root  {
                 
                 debug(`*** BUILDING command ${commandConfiguration.command.name}`)
 
-                if (commandConfiguration.command.name == "xxx" || commandConfiguration.command.name == "new") {
-                    debug(`FOUND ${commandConfiguration.command.name}`)
-                }
+                // if (commandConfiguration.command.name == "xxx" || commandConfiguration.command.name == "new") {
+                //     debug(`FOUND ${commandConfiguration.command.name}`)
+                // }
 
                 let param = yargs["_"]
 
@@ -517,15 +517,15 @@ export class Root  {
                     var requiredArgiments: any[] = []
                     commandConfiguration.options.forEach( (option: any) => {
                         debug(`CONFIGURE COMMAND OPTIONS: DEFINITION: ${JSON.stringify(option.definition)}`)
-                        if ( option.definition == "ID of pet to return") {
-                            debug('found');
-                        }
+                        // if ( option.definition == "ID of pet to return") {
+                        //     debug('found');
+                        // }
                         //option.definition.type='string'
                         yargs.option(option.name , option.definition)
 
-                        if (option.name  == "release") {
-                            debug(`FOUND ${option.name }`)
-                        }
+                        // if (option.name  == "release") {
+                        //     debug(`FOUND ${option.name }`)
+                        // }
                         if (option.defaults != undefined) {
                             yargs.default(option.name , option.defaults)
                         }
