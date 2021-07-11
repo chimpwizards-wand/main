@@ -322,12 +322,18 @@ export class Root  {
                 debug(`Registering ${wandCommand.name}`)
                 try {
                     var instance = await import(wandCommand.config.handler)
+                    
+
                     const parser = new instance.Define()
                     const metadata:any = await parser.getPlugins(wandCommand.name);
                     for (let m in metadata) {
                         let commandConfiguration: any = metadata[m];
                         debug(`Registering ${commandConfiguration.command.name}`)
-                        commandConfiguration['executer'] = new instance.Handler();
+
+                        var handler = new instance.Handler()
+                        const newHandler = Object.assign(handler, {name: wandCommand.name});
+
+                        commandConfiguration['executer'] = newHandler;
                         //allPlugins.push(commandConfiguration)
                         var parent = commandConfiguration.command.parent || 'api' 
 
@@ -396,7 +402,6 @@ export class Root  {
 
         //let commandConfiguration: any = this.findParentConfig(command,config)
         let commandConfiguration: any = config[command].command.parentConfig;
-
 
         // if ( command == 'registry' ){
         //     debug(`FOUND`)
