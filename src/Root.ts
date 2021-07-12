@@ -95,9 +95,9 @@ export class Root  {
         ;
 
         Object.keys(config).sort().forEach( command => {
-            // if ( command == 'namespace' || command == 'registry') {
-            //     debug(`XXX FOUND`)
-            // }            
+            if ( command == 'api' ) {
+                debug(`XXX FOUND`)
+            }            
             let commandDefinition: any = this.getCommandDefinition(config, command);
             debug(`ATTACHING ${command}`)
 
@@ -551,10 +551,12 @@ export class Root  {
                 // })
                 if (commandConfiguration.commands) {
                     Object.keys(commandConfiguration.commands).sort().forEach( subcommand => {
-                        let subCommandDefinition: any = this.getCommandDefinition(commandConfiguration.commands, subcommand);
-                        if(subCommandDefinition) {
-                            yargs.command(subCommandDefinition);
-                        }
+                        if (subcommand != '') {
+                            let subCommandDefinition: any = this.getCommandDefinition(commandConfiguration.commands, subcommand);
+                            if(subCommandDefinition) {
+                                yargs.command(subCommandDefinition);
+                            }
+                        }   
                     });
                 }
 
