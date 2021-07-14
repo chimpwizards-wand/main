@@ -95,9 +95,6 @@ export class Root  {
         ;
 
         Object.keys(config).sort().forEach( command => {
-            if ( command == 'api' ) {
-                debug(`XXX FOUND`)
-            }            
             let commandDefinition: any = this.getCommandDefinition(config, command);
             debug(`ATTACHING ${command}`)
 
