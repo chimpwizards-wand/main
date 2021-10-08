@@ -26,7 +26,7 @@
   "husky": {
     "hooks": {
       "pre-push": "npm version patch",
-      "XXpre-commit": "npm test"
+      "XXXpre-commit": "npm test"
     }
   },
   "dependencies": {
