@@ -571,10 +571,10 @@ export class Root  {
 
                     if ( Reflect.has(instance, key) && commandConfiguration.options.filter((x: { name: string; }) => x.name == key).length>0 ) {
                         debug(`MAP INSTANCE: ${key}=> ${value}`)
-                        Reflect.set(instance, key, value);
+                        if (value) Reflect.set(instance, key, value);
                     } else if ( Reflect.has(instance, key) && commandConfiguration.args.filter((x: { name: string; }) => x.name == key).length==0 ) {
                         debug(`MAP INSTANCE: ${key}=> ${value}`)
-                        Reflect.set(instance, key, value);
+                        if (value) Reflect.set(instance, key, value);
                     } else if ( key == "_") {
                         debug(`MAPING ARGUMENTS: ${JSON.stringify(commandConfiguration.args)}`)
 
