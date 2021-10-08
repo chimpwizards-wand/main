@@ -8,4 +8,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 - Initial release
 
-## [1.4.45]
+## [1.0.45]
+
+## [1.0.53]
+
+- Fix conflict when using attributes & parameters on the same property
