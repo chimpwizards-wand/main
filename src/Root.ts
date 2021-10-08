@@ -397,8 +397,10 @@ export class Root  {
                     
                   if (instance) {
 
-                    //If the key is not in the options then it is an argument
-                    if ( Reflect.has(instance, key) && commandConfiguration.args.filter((x: { name: string; }) => x.name == key).length==0 ) {
+                    if ( Reflect.has(instance, key) && commandConfiguration.options.filter((x: { name: string; }) => x.name == key).length>0 ) {
+                        debug(`MAP INSTANCE: ${key}=> ${value}`)
+                        Reflect.set(instance, key, value);
+                    } else if ( Reflect.has(instance, key) && commandConfiguration.args.filter((x: { name: string; }) => x.name == key).length==0 ) {
                         debug(`MAP INSTANCE: ${key}=> ${value}`)
                         Reflect.set(instance, key, value);
                     } else if ( key == "_") {
