@@ -30,7 +30,7 @@
     }
   },
   "dependencies": {
-    "@chimpwizards/wand": "^1.0.51",
+    "@chimpwizards/wand": "^1.0.57",
     "boxen": "^5.0.1",
     "cd": "^0.3.3",
     "chalk": "^4.0.0",
