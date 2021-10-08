@@ -6,11 +6,12 @@ import * as path from 'path';
 import * as _ from 'lodash';  
 import * as utils from './commons/Utils'
 import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
-import { Execute } from './commons/Execute'
+import { Execute } from './commons/Execute';
+import { Config } from './commons/Config';
 
 const cp = require("child_process");
 const chalk = require('chalk');
-const debug = Debug("w:cli:commands:cli");
+const debug = Debug("w:cli:commands:cli:root");
 const info = require("./package.json");
  
 interface CliOptions {
@@ -94,9 +95,6 @@ export class Root  {
         ;
 
         Object.keys(config).sort().forEach( command => {
-            if ( command == 'xxx' || command == 'new') {
-                debug(`XXX FOUND`)
-            }            
             let commandDefinition: any = this.getCommandDefinition(config, command);
             debug(`ATTACHING ${command}`)
 
@@ -109,18 +107,101 @@ export class Root  {
     }
 
 
+    static findOrCreateParentConfigTree(parents: string, config: any) {
+        //debug(`findOrCreateParentConfigTree`)
+        // if (parents == 'api:petstore:get') {
+        //     debug(`FOUND`)
+        // }           
+        var parentConfig: any = config;
+        var allParents:any = parents.split(":");
+        var i = 0;
+        for (let parent of allParents) {
+            //debug(`Going to find ${parent}`)
+            if (!parentConfig) {
+                debug(`SOMETING WENT WRONG`)
+            }
+            var found: any = this.findOrCreateParentConfig(parent, parentConfig);
+            //debug(`found`)
+            i++;
+            if (i < allParents.length) {
+                found.commands=found.commands || [];
+                parentConfig = found.commands;
+                
+            } else {
+                parentConfig = found;
+            }           
+
+        }
+        return parentConfig;
+    }
+
+    static findOrCreateParentConfig(parent: string, config: any) {
+        //debug(`findOrCreateParentConfig`)
+        // if (parent == 'petstore') {
+        //     debug(`FOUND`)
+        // }           
+        var parentConfig: any = this.findParentConfig(parent, config)
+        //Create a empty parent
+        if (!parentConfig) {
+            config[parent] = {
+                command: {
+                    name: parent,
+                    description: parent,
+                    aliases: parent.charAt(0),
+                },
+                commands: [],
+            }
+            parentConfig=config[parent];
+        }        
+
+        return parentConfig;
+    }
+
+    static findParentConfig(parents: string, config: any) {
+        //debug(`findParentConfig`)
+        // if(parents.indexOf(":")>0) {
+        //     debug('found')
+        // }
+
+        var allParents:any = parents.split(":");
+        var i = 0;
+        var parentConfig: any;
+        for (let parent of allParents) {
+            //debug(`Looking for ${parent}`)
+            for(var the1 in config) {
+                var theone: any = config[the1];
+                if ( theone.command.name == parent ) {
+                    parentConfig= theone;
+                } else {
+                    if ( theone.commands && Object.keys(theone.commands).length > 0) {
+                        parentConfig= this.findParentConfig(parent, theone.commands)
+                    }
+                }
+
+                if (parentConfig) break;
+            }
+        }
+
+
+        //add commands collection if doesnt exists
+        if(parentConfig) {
+            parentConfig.commands = parentConfig.commands || {}
+        }
+
+        return parentConfig;
+    }
 
     static async addCommand(commandDir: string, config: any, name: string, defaultParent?: string) {
+        debug(`addCommand ${commandDir}`)
         let filePath = path.resolve(path.join(commandDir, name));
         var ext = path.extname(filePath);
         if ((ext == '.js' || ext == '.ts') && name.indexOf(".d.ts")<0) {
-        //if (ext == '.js') {
             //TODO: Replace hardcoded path
             var packageName = filePath.replace(".js","").replace(".ts","")
 
-            if ( packageName.indexOf("spell-workspace")>0) {
-                debug(`PACKAGE FONUD`)
-            }
+            // if ( packageName.indexOf("spell-workspace")>0) {
+            //     debug(`PACKAGE FONUD`)
+            // }
 
             debug(`Loading ${packageName}`)
 
@@ -138,50 +219,41 @@ export class Root  {
                             
                 var allPlugins =[]
                 if(plugin['register'] != undefined) {
-                    var definition = plugin.register();
-                    allPlugins.push(definition)
+                    var definition1 = plugin.register();
+                    allPlugins.push(definition1)
                 } else {
-                    if ( packageName.indexOf("spell-workspace")>0) {
+                    if ( packageName.indexOf("spell-api")>0) {
                         debug(`PACKAGE FONUD`)
                     }                    
                     var allofthem = _.values(plugin);
                     allofthem.forEach( (oneofthem: any) => {
                         if(oneofthem['register'] != undefined) {
-                            var definition = oneofthem.register();
-                            allPlugins.push(definition)
+                            var definition2 = oneofthem.register();
+                            allPlugins.push(definition2)
                         }
 
                     })
                 }
 
-                debug(`Registering ${packageName}`)
-                for (var j = 0; j < allPlugins.length; j++){
-                    var definition = allPlugins[j];
 
-                    var parent = defaultParent || definition?.command?.parent;
+                //debug(`Registering ${packageName}`)
+                for (let definition of allPlugins){
+                    var parent: any = defaultParent || definition?.command?.parent;
 
-                    if (parent && parent == 'workspace') {
-                        debug(`FOUND ${defaultParent||'root'}`)
-                    }
+
 
                     if (parent) {
-                        //Create a empty parent
-                        if (!config[parent]) {
-                            config[parent] = {
-                                command: {
-                                    name: parent,
-                                    description: parent,
-                                    aliases: parent.substring(0,1)
-                                },
 
-                            }
+                        if(!config) {
+                            debug(`SOMETHIGN WENT WRONG`)
                         }
+                        var parentConfig: any = this.findOrCreateParentConfigTree(parent, config)
 
-                        if (config[parent]) {
-                            if (!config[parent].commands) {
-                                config[parent].commands = {}
-                            }
-                            config[parent].commands[definition.command.name] = definition
+                        // if (definition.command.name == 'import') {
+                        //     debug(`FOUND`)
+                        // }                        
+                        if (parentConfig) {
+                            parentConfig.commands[definition.command.name] = definition
                         }
 
                         definition.command.parent = parent;
@@ -193,17 +265,18 @@ export class Root  {
                     //Search for subComponents
                     filePath = path.join(commandDir, definition.command.name);
                     if ( fs.existsSync(filePath)) {
+                        var parentConfig2: any = this.findParentConfig(parent, config)
+
                         var subComfing = config;
-                        if (parent && config[parent]) {
-                            subComfing = config[parent].commands;
+                        if (parent && parentConfig2) {
+                            subComfing = parentConfig2.commands;
                         }
 
-                        var bagSubComand = await this.addCommands(filePath, subComfing, definition.command.name)
-
-                        //config = _.merge({}, bagSubComand);
+                        await this.addCommands(filePath, subComfing, definition.command.name)
 
                     }
                 }
+                debug(`End Cicle`)
             } catch (e) {
                 debug(`${chalk.red("SOMETHING WHENT WRONG")}`)
                 debug(e);
@@ -226,33 +299,96 @@ export class Root  {
                 }
                 var subComfing = config;
                 var bagSubComand = await this.addCommands(filePath, subComfing,name)
-                //config = _.merge({}, bagSubComand);
+
             }
         }
 
         return config;
     }
 
+    static async addCommandsFromConfig(config: any){
+        debug(`addCommandsFromConfig`)
+        //Add extra commans from .wand/config
+        const wandConfig = new Config();
+        if (wandConfig.inContext({dir: process.cwd()})) {
+            const wandContext = wandConfig.load({})
+            wandContext.commands = wandContext.commands || {}
+            wandContext.commands.api = wandContext.commands.api || [];
+            for (const key in wandContext.commands.api) {
+                var wandCommand = wandContext.commands.api[key];
+                debug(`Registering ${wandCommand.name}`)
+                try {
+                    var instance = await import(wandCommand.config.handler)
+                    
+
+                    const parser = new instance.Define()
+                    const metadata:any = await parser.getPlugins(wandCommand.name);
+                    for (let m in metadata) {
+                        let commandConfiguration: any = metadata[m];
+                        debug(`Registering ${commandConfiguration.command.name}`)
+
+                        var handler = new instance.Handler()
+                        const newHandler = Object.assign(handler, {name: wandCommand.name});
+
+                        commandConfiguration['executer'] = newHandler;
+                        //allPlugins.push(commandConfiguration)
+                        var parent = commandConfiguration.command.parent || 'api' 
+
+
+                        // if (parent == "api:petstore:get" && commandConfiguration.command.name=='pet') {
+                        //     debug('found')
+                        // }                             
+
+                        var parentConfig: any = this.findOrCreateParentConfigTree(parent, config)
+                        if (parentConfig) {
+                            if(parentConfig.commands[commandConfiguration.command.name] ) {
+                                _.mergeWith(parentConfig.commands[commandConfiguration.command.name],commandConfiguration, (objValue: any, srcValue: any)=>{
+                                    if (_.isArray(objValue)) {
+                                        return objValue.concat(srcValue);
+                                      }
+                                });
+
+                            } else {
+                                parentConfig.commands[commandConfiguration.command.name] = commandConfiguration
+                            }
+                            
+                        }
+                        commandConfiguration.command.parent = parent;
+                        commandConfiguration.command.parentConfig = parentConfig;
+                      
+                            
+                    }
+
+                    debug(`Handler`)
+                } catch (e) {
+                    debug(`${chalk.red("SOMETHING WHENT WRONG")}`)
+                    debug(e);
+                    debug(`error`)
+                }
+            }
+        }        
+        debug(`Done`)
+    }
     static async addCommands(commandDir: string, config: any, defaultParent?: string) {
         debug(`SEARCH FOR COMMANDS ${defaultParent||'root'}`)
-        //var config = _.merge({}, bag);
 
+        //Search for plugins in dick
         if ( fs.existsSync(commandDir)) {
             var files: string[] = fs.readdirSync(commandDir);
             for (const name of files) {         
                 
                 let filePath = path.resolve(path.join(commandDir, name));
-                //let filePath = path.join(commandDir, name);
+
                 debug(`PATH FOUND ${filePath}`)
 
                 if ( fs.existsSync(filePath)) {
                     await this.addCommand(commandDir, config, name, defaultParent)
                 }
-
             }
-
-
         }
+
+        //search for plugins in .wand/config file
+        await this.addCommandsFromConfig(config)
 
         return config;
 
@@ -261,11 +397,21 @@ export class Root  {
     static addDummyArguments(config: any, command: string, allArgs: any) {
         debug(`COLLECTING ARGUMENTS ${command}`)
 
-        let commandConfiguration: any = config[command];
+        //let commandConfiguration: any = this.findParentConfig(command,config)
+        let commandConfiguration: any = config[command].command.parentConfig;
 
-        if (commandConfiguration.command.parent) {
+        // if ( command == 'registry' ){
+        //     debug(`FOUND`)
+        // } 
+
+
+        if(!commandConfiguration || !commandConfiguration.command) {
+            debug(`SOMETHING WHENT WRONG`)
+        }
+
+        if (commandConfiguration?.command?.parent) {
             
-            this.addDummyArguments(commandConfiguration.command.parentConfig, commandConfiguration.command.parent, allArgs)
+            this.addDummyArguments(commandConfiguration.command.parentConfig.commands, commandConfiguration.command.name, allArgs)
             
             allArgs.push({name: "dummy", attr: "dummy"});
         }
@@ -274,16 +420,33 @@ export class Root  {
     static findParent(commandConfiguration: any, context: string[]) {
         var parents: string[] = context || []
         if ( commandConfiguration.command?.parent) {
-            parents.push(commandConfiguration.command.parent)
+            var parent:string = commandConfiguration.command.parent;
+            var last = parent.split(':').reverse()[0]
+
+            parents.push(last)
             this.findParent(commandConfiguration.command.parentConfig, parents)            
         }
 
         return parents;
     }
+
+    static findParentNEW(commandConfiguration: any, context: string[]) {
+        var parents: string[] = context || []
+        if ( commandConfiguration.command?.parent) {
+            var parent:string = commandConfiguration.command.parent;
+
+            parents.push(parent)
+            this.findParent(commandConfiguration.command.parentConfig, parents)            
+        }
+
+        return parents;
+    }
+
+
     static getCommandDefinition(config: any, command: string) {
-        if ( command == 'xxx' || command == 'new') {
-            debug(`FOUND`)
-        }  
+        // if ( command == 'namespace' || command == 'registry') {
+        //     debug(`FOUND`)
+        // }  
         let commandConfiguration = config[command];
         debug(`BUILDING DEFINITION ${command}`)
         if (!commandConfiguration) {
@@ -293,14 +456,16 @@ export class Root  {
             command: commandConfiguration.command?.name, 
             aliases: commandConfiguration.command?.aliases, 
             desc: commandConfiguration.command?.description, 
+            parent: commandConfiguration.command?.parent, 
+            parentConfig: commandConfiguration.command?.parentConfig, 
 
             builder:  (yargs: any) => {
                 
                 debug(`*** BUILDING command ${commandConfiguration.command.name}`)
 
-                if (commandConfiguration.command.name == "xxx" || commandConfiguration.command.name == "new") {
-                    debug(`FOUND ${commandConfiguration.command.name}`)
-                }
+                // if (commandConfiguration.command.name == "xxx" || commandConfiguration.command.name == "new") {
+                //     debug(`FOUND ${commandConfiguration.command.name}`)
+                // }
 
                 let param = yargs["_"]
 
@@ -354,11 +519,15 @@ export class Root  {
                     var requiredArgiments: any[] = []
                     commandConfiguration.options.forEach( (option: any) => {
                         debug(`CONFIGURE COMMAND OPTIONS: DEFINITION: ${JSON.stringify(option.definition)}`)
+                        // if ( option.definition == "ID of pet to return") {
+                        //     debug('found');
+                        // }
+                        //option.definition.type='string'
                         yargs.option(option.name , option.definition)
 
-                        if (option.name  == "release") {
-                            debug(`FOUND ${option.name }`)
-                        }
+                        // if (option.name  == "release") {
+                        //     debug(`FOUND ${option.name }`)
+                        // }
                         if (option.defaults != undefined) {
                             yargs.default(option.name , option.defaults)
                         }
@@ -379,10 +548,12 @@ export class Root  {
                 // })
                 if (commandConfiguration.commands) {
                     Object.keys(commandConfiguration.commands).sort().forEach( subcommand => {
-                        let subCommandDefinition: any = this.getCommandDefinition(commandConfiguration.commands, subcommand);
-                        if(subCommandDefinition) {
-                            yargs.command(subCommandDefinition);
-                        }
+                        if (subcommand != '') {
+                            let subCommandDefinition: any = this.getCommandDefinition(commandConfiguration.commands, subcommand);
+                            if(subCommandDefinition) {
+                                yargs.command(subCommandDefinition);
+                            }
+                        }   
                     });
                 }
 
@@ -438,15 +609,17 @@ export class Root  {
                     //TODO: Verify required Arguments
                     var missing = [];
                     if ( commandConfiguration.demandArgument) {
-                        for(var j=0; j < commandConfiguration.demandArgument.length; j++) {
-                            var requiredArgument = commandConfiguration.demandArgument[j]
+                        for(let requiredArgument in commandConfiguration.demandArgument) {
                             if (!instance[requiredArgument]) {
                                 missing.push(requiredArgument)
                             }
                         };
                     }
                     if (missing.length==0) {
-                        instance.execute(yargs)
+                        const newInstance = Object.assign(instance, {context: commandConfiguration});
+
+                        newInstance.execute(yargs)
+                        //instance['context'] = commandConfiguration;
                     } else {
                         // const executer = new Execute();
                         // let cmd = `w ${commandConfiguration.usage} --help`;
@@ -456,6 +629,10 @@ export class Root  {
                     debug(`AFTER EXECUTE ----------------- `)
                 }
             }
+        }
+
+        if (!commandDefinition) {
+            debug(`Something wrong happens...`)
         }
 
         return commandDefinition;
