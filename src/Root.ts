@@ -398,7 +398,7 @@ export class Root  {
         debug(`COLLECTING ARGUMENTS ${command}`)
 
         //let commandConfiguration: any = this.findParentConfig(command,config)
-        let commandConfiguration: any = config[command].command.parentConfig;
+        let commandConfiguration: any = config[command]; //.command.parentConfig;
 
         // if ( command == 'registry' ){
         //     debug(`FOUND`)
@@ -411,7 +411,8 @@ export class Root  {
 
         if (commandConfiguration?.command?.parent) {
             
-            this.addDummyArguments(commandConfiguration.command.parentConfig.commands, commandConfiguration.command.name, allArgs)
+            //this.addDummyArguments(commandConfiguration.command.parentConfig.commands, commandConfiguration.command.name, allArgs)
+            this.addDummyArguments(commandConfiguration.command.parentConfig, commandConfiguration.command.parent, allArgs)
             
             allArgs.push({name: "dummy", attr: "dummy"});
         }
@@ -609,7 +610,7 @@ export class Root  {
                     //TODO: Verify required Arguments
                     var missing = [];
                     if ( commandConfiguration.demandArgument) {
-                        for(let requiredArgument in commandConfiguration.demandArgument) {
+                        for(let requiredArgument of commandConfiguration.demandArgument) {
                             if (!instance[requiredArgument]) {
                                 missing.push(requiredArgument)
                             }
