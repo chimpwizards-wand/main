@@ -13,7 +13,7 @@ const info = require("../package.json");
 const debug = Debug("w:cli:commands:init");
 
 @CommandDefinition({ 
-    description: 'Readme'
+    description: 'Show cli intro banner'
 })
 export class Readme extends Command  { 
 

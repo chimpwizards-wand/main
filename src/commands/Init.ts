@@ -10,7 +10,7 @@ const chalk = require('chalk')
 const debug = Debug("w:cli:commands:init");
 
 @CommandDefinition({ 
-    description: 'Initialize CLI', 
+    description: 'Initialize the cli', 
     alias: 'i',
     examples: [
         [`init --force`, `Force initialization for all settings`],
