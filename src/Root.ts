@@ -318,7 +318,7 @@ export class Root  {
                 var wandCommand = wandContext.commands.api[key];
                 debug(`Registering ${wandCommand.name}`)
                 try {
-                    var instance = await import(wandCommand.config.handler)
+                    var instance = await import(wandCommand.config.handler || '@chimpwizards-wand/spell-api')
                     
 
                     const parser = new instance.Define()
